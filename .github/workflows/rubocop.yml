@@ -35,13 +35,13 @@ jobs:
         gem install rubocop-rails
 
     - run: time rubocop
-      working-directory: rails
+      working-directory: ruby
     - run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
-      working-directory: rails
+      working-directory: ruby
 
     - run: |
         hyperfine \
           --warmup 5 \
           'rubocop --parallel' \
           "$GITHUB_WORKSPACE/target/release/ruby-clippy"
-      working-directory: rails
+      working-directory: ruby
