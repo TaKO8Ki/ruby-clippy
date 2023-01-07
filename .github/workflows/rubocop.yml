@@ -37,5 +37,5 @@ jobs:
       working-directory: rails
 
     - name: Run ruby-clippy
-      run: time ./target/release/ruby-clippy
+      run: time /home/runner/work/ruby-clippy/ruby-clippy/target/release/ruby-clippy
       working-directory: rails
