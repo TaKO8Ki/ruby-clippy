@@ -22,6 +22,10 @@ jobs:
         ruby-version: 3.2
         bundler-cache: true
 
+    - run: echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
+
+    - run: brew install hyperfine
+
     - uses: Swatinem/rust-cache@v2
     - run: cargo build --release
 
@@ -32,10 +36,9 @@ jobs:
         gem install rubocop-performance
         gem install rubocop-rails
 
-    - name: Run RuboCop
-      run: time rubocop --parallel
-      working-directory: rails
-
-    - name: Run ruby-clippy
-      run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
+    - run: |
+        hyperfine \
+          --warmup 3 \
+          'rubocop --no-parallel' \
+          "$GITHUB_WORKSPACE/target/release/ruby-clippy"
       working-directory: rails
