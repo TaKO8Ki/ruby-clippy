@@ -4,3 +4,6 @@
 [submodule "ruby"]
 	path = ruby
 	url = git@github.com:ruby/ruby.git
+[submodule "mastodon"]
+	path = mastodon
+	url = git@github.com:mastodon/mastodon.git

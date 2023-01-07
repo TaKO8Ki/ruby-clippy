@@ -39,9 +39,9 @@ jobs:
 
     - run: time rubocop
       continue-on-error: true
-      working-directory: rails
+      working-directory: mastodon
     - run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
-      working-directory: rails
+      working-directory: mastodon
 
     - run: |
         hyperfine \
@@ -49,4 +49,4 @@ jobs:
           --warmup 5 \
           'rubocop --parallel' \
           "$GITHUB_WORKSPACE/target/release/ruby-clippy"
-      working-directory: rails
+      working-directory: mastodon
