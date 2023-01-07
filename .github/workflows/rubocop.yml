@@ -1,6 +1,6 @@
 name: RuboCop
 
-on: [push, pull_request]
+on: [push]
 
 permissions:
   contents: read
@@ -35,7 +35,9 @@ jobs:
         gem install rubocop-rails
 
     - run: time rubocop
+      working-directory: rails
     - run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
+      working-directory: rails
 
     - run: |
         hyperfine \
