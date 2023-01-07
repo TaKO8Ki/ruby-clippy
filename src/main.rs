@@ -1,23 +1,40 @@
+use ignore::types::TypesBuilder;
+use ignore::WalkBuilder;
 use lib_ruby_parser::{
     nodes::{Begin, Lvar, Lvasgn, Send},
     source::DecodedInput,
     Loc, Node, Parser, ParserOptions, ParserResult,
 };
-use walkdir::WalkDir;
+use tracing::debug;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    for entry in WalkDir::new(".")
+    tracing_subscriber::fmt::init();
+
+    let mut builder = TypesBuilder::new();
+    builder.add_defaults();
+    builder.select("ruby");
+    let matcher = builder.build().unwrap();
+
+    for entry in WalkBuilder::new(".")
+        .types(matcher)
+        .build()
         .into_iter()
         .filter_map(Result::ok)
-        .filter(|e| {
-            !e.file_type().is_dir()
-                && e.file_name()
-                    .to_str()
-                    .map(|s| s.ends_with(".rb"))
-                    .unwrap_or(false)
-        })
     {
+        if entry
+            .file_type()
+            .map_or(false, |file_type| file_type.is_dir())
+        {
+            continue;
+        }
         let f_name = String::from(entry.file_name().to_string_lossy());
+        debug!("Parsing {}", f_name);
+        if entry
+            .file_type()
+            .map_or(false, |file_type| file_type.is_dir())
+        {
+            continue;
+        }
         let text = std::fs::read_to_string(entry.path()).ok().unwrap();
         let options = ParserOptions {
             buffer_name: f_name,
@@ -31,6 +48,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             ..
         } = parser.do_parse()
         {
+            debug!("Parsing");
             ambiguous_assignment(*ast, &input);
         }
     }

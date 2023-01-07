@@ -5,4 +5,6 @@ edition = "2021"
 
 [dependencies]
 lib-ruby-parser = "4.0.4"
-walkdir = "2"
+ignore = "0.4"
+tracing = "0.1"
+tracing-subscriber = "0.3"
