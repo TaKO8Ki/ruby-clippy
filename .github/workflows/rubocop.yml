@@ -22,8 +22,8 @@ jobs:
         ruby-version: 3.2
         bundler-cache: true
 
-    - run: cargo build --release
     - uses: Swatinem/rust-cache@v2
+    - run: cargo build --release
 
     - run: | 
         gem install rubocop
