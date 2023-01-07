@@ -35,7 +35,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         {
             continue;
         }
-        let text = std::fs::read_to_string(entry.path()).ok().unwrap();
+        debug!("Parsing {:?}", entry.path());
+        let Some(text) = std::fs::read_to_string(entry.path()).ok() else {
+            continue
+        };
         let options = ParserOptions {
             buffer_name: f_name,
             ..Default::default()

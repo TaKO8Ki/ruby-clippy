@@ -34,14 +34,17 @@ jobs:
         gem install rubocop-performance
         gem install rubocop-rails
 
+    - run: rm .rubocop.yml
+      working-directory: rails
+
     - run: time rubocop
-      working-directory: ruby
+      working-directory: rails
     - run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
-      working-directory: ruby
+      working-directory: rails
 
     - run: |
         hyperfine \
           --warmup 5 \
           'rubocop --parallel' \
           "$GITHUB_WORKSPACE/target/release/ruby-clippy"
-      working-directory: ruby
+      working-directory: rails
