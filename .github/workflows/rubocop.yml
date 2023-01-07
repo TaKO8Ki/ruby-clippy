@@ -1,0 +1,33 @@
+name: RuboCop
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_ONLY: rubocop
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+
+    - name: Set up Ruby 3.2
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2
+        bundler-cache: true
+
+    - run: cargo build --release
+
+    - name: Run RuboCop
+      run: time rubocop --parallel
+      working-directory: rails
+
+    - name: Run ruby-clippy
+      run: time ./target/release/ruby-clippy
+      working-directory: rails
