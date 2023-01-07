@@ -38,12 +38,14 @@ jobs:
       working-directory: rails
 
     - run: time rubocop
+      continue-on-error: true
       working-directory: rails
     - run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
       working-directory: rails
 
     - run: |
         hyperfine \
+          --ignore-failure \
           --warmup 5 \
           'rubocop --parallel' \
           "$GITHUB_WORKSPACE/target/release/ruby-clippy"
