@@ -39,6 +39,6 @@ jobs:
     - run: |
         hyperfine \
           --warmup 3 \
-          'rubocop --no-parallel' \
+          'rubocop' \
           "$GITHUB_WORKSPACE/target/release/ruby-clippy"
       working-directory: rails
