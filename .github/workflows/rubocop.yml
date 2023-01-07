@@ -8,8 +8,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      BUNDLE_ONLY: rubocop
 
     steps:
     - uses: actions/checkout@v3
@@ -35,6 +33,9 @@ jobs:
         gem install rubocop-packaging
         gem install rubocop-performance
         gem install rubocop-rails
+
+    - run: time rubocop
+    - run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
 
     - run: |
         hyperfine \
