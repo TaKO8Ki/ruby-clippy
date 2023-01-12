@@ -1,0 +1,53 @@
+name: RuboCop
+
+on: [push]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: 'true'
+
+    - name: Set up Ruby 3.2
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2
+        bundler-cache: true
+
+    - run: echo "/home/linuxbrew/.linuxbrew/bin:/home/linuxbrew/.linuxbrew/sbin" >> $GITHUB_PATH
+
+    - run: brew install hyperfine
+
+    - uses: Swatinem/rust-cache@v2
+    - run: cargo build --release
+
+    - run: | 
+        gem install rubocop
+        gem install rubocop-minitest
+        gem install rubocop-packaging
+        gem install rubocop-performance
+        gem install rubocop-rails
+        gem install rubocop-rspec
+
+    - run: rm .rubocop.yml
+      working-directory: rails
+
+    - run: time rubocop
+      continue-on-error: true
+      working-directory: mastodon
+    - run: time $GITHUB_WORKSPACE/target/release/ruby-clippy
+      working-directory: mastodon
+
+    - run: |
+        hyperfine \
+          --ignore-failure \
+          --warmup 5 \
+          'rubocop --parallel' \
+          "$GITHUB_WORKSPACE/target/release/ruby-clippy"
+      working-directory: mastodon
